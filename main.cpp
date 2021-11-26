@@ -88,10 +88,72 @@ public:
 		tTJSVariant v((const tjs_uint8 *)&indata[0], countind);
 		return v;
 	}
+
+	static tTJSVariant substr(tTJSVariant inoct, tTVInteger startind, tTVInteger countind)
+	{
+		return substring(inoct, startind, countind);
+	}
+
+	static tTJSVariant reverse(tTJSVariant inoct)
+	{
+		tTJSVariantOctet *inoctptr = inoct.AsOctetNoAddRef();
+		if (!inoctptr)
+		{
+			return tTJSVariant();
+		}
+		const tjs_uint8 *indata = inoctptr->GetData();
+		size_t inlen = inoctptr->GetLength();
+		if (inlen == 0)
+		{
+			return tTJSVariant();
+		}
+		tjs_uint8 *reversedoct = new tjs_uint8[inlen];
+		for (size_t i = 0; i < inlen; i += 1)
+		{
+			reversedoct[inlen - 1 - i] = indata[i];
+		}
+		tTJSVariant v((const tjs_uint8 *)&reversedoct[0], inlen);
+		delete[] reversedoct;
+		return v;
+	}
+
+	static tTJSVariant repeat(tTJSVariant inoct, tTVInteger count)
+	{
+		if (count == 0)
+		{
+			return tTJSVariant();
+		}
+		tTJSVariantOctet *inoctptr = inoct.AsOctetNoAddRef();
+		if (!inoctptr)
+		{
+			return tTJSVariant();
+		}
+		if (count == 1)
+		{
+			return inoct;
+		}
+		const tjs_uint8 *indata = inoctptr->GetData();
+		size_t inlen = inoctptr->GetLength();
+		if (inlen == 0)
+		{
+			return tTJSVariant();
+		}
+		tjs_uint8 *reversedoct = new tjs_uint8[inlen];
+		for (size_t i = 0; i < inlen; i += 1)
+		{
+			reversedoct[inlen - 1 - i] = indata[i];
+		}
+		tTJSVariant v((const tjs_uint8 *)&reversedoct[0], inlen);
+		delete[] reversedoct;
+		return v;
+	}
 };
 
 NCB_REGISTER_CLASS(Octet)
 {
 	NCB_METHOD(indexOf);
 	NCB_METHOD(substring);
+	NCB_METHOD(substr);
+	NCB_METHOD(reverse);
+	NCB_METHOD(repeat);
 };
